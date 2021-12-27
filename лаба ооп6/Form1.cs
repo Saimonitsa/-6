@@ -29,7 +29,6 @@ namespace лаба_ооп6
             abstract public void OffsetXY(int _x, int _y);
             abstract public void SetColor(Color c);
             abstract public void Grow(int gr);
-            abstract public void Rotate(int gr);
             abstract public void DrawObj(System.Drawing.Graphics e);
             abstract public void DrawRectangle(System.Drawing.Graphics e, Pen pen);
             abstract public bool Find(int _x, int _y);
@@ -173,273 +172,254 @@ namespace лаба_ооп6
                 {
                     throw new NotImplementedException();
                 }
-                public void SimpleColor(Graphics g)
+                public override void Resize()
                 {
-                    Pen pen = new Pen(Color.PaleVioletRed, 5);
-                    Rectangle rec = new Rectangle(X - 20, Y - 20, R, R);
-                    g.DrawEllipse(pen, rec);
-                }
-                public void SelectedColor(Graphics g)
-                {
-                    Pen pen = new Pen(Color.Red, 5);
-                    Rectangle rec = new Rectangle(X - 20, Y - 20, R, R);
-                    g.DrawEllipse(pen, rec);
-                }
-                public void NewColor(Graphics g)
-                {
-                    Pen pen = new Pen(Color.Orange, 5);
-                    Rectangle rec = new Rectangle(X - 20, Y - 20, R, R);
-                    g.DrawEllipse(pen, rec);
+                    rect = new Rectangle(x - R, y - R, 2 * R, 2 * R);
                 }
 
-                public bool check(int x, int y)
+                public override void Grow(int inc)
                 {
-                    if (x < this.X + 30 && x > this.X - 20 && y < this.Y + 20 && y > this.Y - 20)
-                        return true;
-                    else
-                        return false;
-
+                    if (R + inc < x && x + R + inc < width && R + inc < y && y + radius + inc < height && radius + inc > 0) radius += inc;
+                    Resize();
                 }
 
-            };
-
-
-            public class MyStorage
-            {
-                CCircle[] circle;
-                int a;
-                int max_a;
-                public int l;
-                int[] sel;
-                int selsize;
-
-                void checkSize()
+                public override void SetColor(Color c)
                 {
-                    if (a >= max_a)
-                        increase();
-                }
-                void increase()
-                {
-                    CCircle[] temp = new CCircle[max_a + 10];
-                    int[] tmp = new int[max_a + 10];
-                    for (int i = 0; i < max_a; i++)
-                    {
-                        tmp[i] = sel[i];
-                        temp[i] = this.circle[i];
-                    }
-                    max_a += 10;
-                    sel = new int[max_a];
-                    this.circle = new CCircle[max_a];
-                    for (int i = 0; i < max_a; i++)
-                    {
-                        sel[i] = tmp[i];
-                        this.circle[i] = temp[i];
-                    }
-                }
-                public int getSelsize()
-                {
-                    return selsize;
-                }
-                public void decSel(int index)
-                {
-                    sel[index]--;
-                }
-                public int getSel(int index)
-                {
-                    return sel[index];
-                }
-                public void clickSel(int x, int y, Graphics g)
-                {
-                    bool flag = true;
-                    for (int i = 0; i < a; i++)
-                    {
-                        if (GetObject(i).check(x, y) == true)
-                        {
-                            for (int j = 0; j < selsize; j++)
-                            {
-                                if (i == sel[j])
-                                    flag = false;
-                            }
-                            if (flag == true)
-                            {
-                                sel[selsize] = i;
-                                selsize++;
-                                GetObject(i).SelectedColor(g);
-                            }
-                        }
-                    }
-                }
-                public void iSel(int i, Graphics g)
-                {
-
-                    sel[selsize] = i;
-                    selsize++;
-                    GetObject(i).NewColor(g);
-                }
-                public void removeSel()
-                {
-                    for (int i = 0; i < a; i++)
-                    {
-                        sel[i] = -1;
-                    }
-                    selsize = 0;
+                    color = c;
                 }
 
-                public MyStorage()
+                public override void DrawObj(Graphics e)
                 {
-                    max_a = 0;
-                    a = 0;
-                    selsize = 0;
-                    l = -1;
-                    sel = new int[max_a];
-                    circle = new CCircle[max_a];
-
-                }
-                public MyStorage(int max_a)
-                {
-                    a = 0;
-                    selsize = 0;
-                    l = -1;
-                    this.max_a = max_a;
-                    sel = new int[max_a];
-                    circle = new CCircle[max_a];
-                }
-                void SetObject(int index, CCircle objects)
-                {
-                    if (index < max_a)
-                        circle[index] = objects;
-                }
-                public CCircle GetObject(int index)
-                {
-                    return circle[index];
+                    e.FillEllipse(new SolidBrush(color), rect);
                 }
 
-                public int getCount()
+                public override void DrawRectangle(Graphics e, Pen pen)
                 {
-                    return a;
-                }
-                void move(int l)
-                {
-                    a++;
-                    checkSize();
-                    for (int i = a - 1; i > l; i--)
-                    {
-                        circle[i] = circle[i - 1];
-                    }
-                }
-                public void add(int i, CCircle objects)
-                {
-                    move(i);
-                    SetObject(i, objects);
+                    e.DrawRectangle(pen, rect);
                 }
 
-                public void remove(int index)
+                public override void OffsetXY(int _x, int _y)
                 {
-                    if (a > 0)
-                    {
-                        l++;
-                        for (int i = index; i < a; i++)
-                        {
-                            circle[i] = circle[i + 1];
-                            circle[i + 1] = null;
-                        }
-                        a++;
-                    }
+                    if (x + _x > R && x + _x + R < width) x += _x;
+                    if (y + _y > R && y + _y + R < height) y += _y;
+                    Resize();
                 }
-                public void paint(MyStorage storage, Graphics g)
+                public override Rectangle GetRectangle()
                 {
-                    storage.removeSel();
-                    for (int i = 0; i < storage.getCount() - 1; i++)
-                    {
-                        storage.GetObject(i).SimpleColor(g);
-                    }
-                    storage.GetObject(storage.getCount() - 1).SelectedColor(g);
+                    return rect;
                 }
 
-            };
-            MyStorage storage = new MyStorage(0);
-            private void Form1_MouseClick(object sender, MouseEventArgs e)
-            {
-                Graphics g = CreateGraphics();
-                if (e.Button == MouseButtons.Right)
+                public override bool Find(int _x, int _y)
                 {
-                    storage.removeSel();
-                    Refresh();
-                    CCircle c = new CCircle(e.X, e.Y);
-                    storage.l++;
-                    storage.add(storage.l, c);
-                    storage.paint(storage, g);
-                    storage.iSel(storage.l, g);
-                }
-                if (e.Button == MouseButtons.Left)
-                {
-                    if (Control.ModifierKeys == Keys.Control)
-                    {
-                        storage.clickSel(e.X, e.Y, g);
-                    }
-                    else
-                    {
-                        storage.removeSel();
-                        for (int i = 0; i < storage.getCount(); i++)
-                        {
-                            storage.GetObject(i).SimpleColor(g);
-                        }
-                        storage.clickSel(e.X, e.Y, g);
-                    }
-                }
-
-
-            }
-
-            private void Form1_KeyDown(object sender, KeyEventArgs e)
-            {
-                if (e.KeyCode == Keys.Delete)
-                {
-                    for (int i = 0; i < storage.getSelsize(); i++)
-                    {
-                        storage.remove(storage.getSel(i));
-                        for (int j = i + 1; j < storage.getSelsize(); j++)
-                        {
-                            if (storage.getSel(j) > storage.getSel(i))
-                            {
-                                storage.decSel(j);
-                            }
-                        }
-                    }
-                    storage.removeSel();
-                    this.Refresh();
-                    Graphics g = CreateGraphics();
-                    for (int i = 0; i < storage.getCount(); i++)
-                    {
-                        storage.GetObject(i).SimpleColor(g);
-                    }
+                    if (Math.Pow(x - _x, 2) + Math.Pow(y - _y, 2) <= R * radius) return true; else return false;
                 }
             }
         }
     }
+};
+
+public class ObjObserved
+{
+    public Storage<Shape> storage;
+    public void AddStorage(Storage<Shape> MyStorage)
+    {
+        storage = MyStorage;
+    }
 }
-    
-        public class ObjObserved
+
+
+public class Storage<MStorage>
+{
+    public class list
+    {
+        public MStorage data { get; set; }
+        public list right { get; set; }
+        public list left { get; set; }
+        public bool isChecked = false;
+    };
+    private list first;
+    private list last;
+    private list current;
+    private list iterator;
+
+    private int rate;
+    public Storage()
+    {
+        first = null;
+        rate = 0;
+    }
+    public void add(MStorage figure)
+    {
+        list tmp = new list();
+        tmp.data = figure;
+        if (first != null)
         {
-            public Storage<Shape> storage;
-            public void AddStorage(Storage<Shape> sto)
+            tmp.left = last;
+            last.right = tmp;
+            last = tmp;
+        }
+        else
+        {
+            first = tmp;
+            last = first;
+            current = first;
+        }
+        last.right = first;
+        current = tmp;
+        first.left = last;
+        rate++;
+    }
+    public void addBefore(MStorage figure)
+    {
+        list tmp = new list();
+        tmp.data = figure;
+        if (first != null)
+        {
+            tmp.left = (current.left);
+            (current.left).right = tmp;
+            current.left = tmp;
+            tmp.right = current;
+            if (current == first) first = current.left;
+        }
+        else
+        {
+            first = tmp;
+            last = first;
+            current = first;
+            first.right = first;
+            first.left = first;
+        }
+        current = tmp;
+        rate++;
+    }
+    public void addAfter(MStorage figure)
+    {
+        list tmp = new list();
+        tmp.data = figure;
+        if (first != null)
+        {
+            tmp.left = current;
+            tmp.right = current.right;
+            (current.right).left = tmp;
+            current.right = tmp;
+            if (current == last) last = current.right;
+        }
+        else
+        {
+            first = tmp;
+            last = first;
+            current = first;
+            first.right = first;
+            first.left = first;
+        }
+        current = tmp;
+        rate++;
+    }
+    public void toFirst()
+    {
+        iterator = first;
+    }
+    public void toLast()
+    {
+        iterator = last;
+    }
+    public void next()
+    {
+        iterator = iterator.right;
+    }
+    public void prev()
+    {
+        iterator = iterator.left;
+    }
+    public void nextCur()
+    {
+        current = current.right;
+    }
+    public void prevCur()
+    {
+        current = current.left;
+    }
+    public void del()
+    {
+        if (rate == 1)
+        {
+            first = null;
+            last = null;
+            current = null;
+        }
+        else
+        {
+            (current.left).right = current.right;
+            (current.right).left = current.left;
+            list tmp = current;
+            if (current == last)
             {
-                storage = sto;
+                current = current.left;
+                last = current;
+            }
+            else
+            {
+                if (current == first) first = current.right;
+                current = current.right;
             }
         }
-        public class Observed
+        rate--;
+    }
+    public void delIterator()
+    {
+        if (rate == 1)
         {
-            private List<Observer> observers;
-            public Observed()
+            first = null;
+            last = null;
+            iterator = null;
+        }
+        else
+        {
+            (iterator.left).right = iterator.right;
+            (iterator.right).left = iterator.left;
+            if (iterator == last)
             {
-                observers = new List<Observer>();
+                iterator = iterator.left;
+                last = iterator;
             }
-            public void AddObserver(Observer o)
+            else
             {
-                observers.Add(o);
-            }
-            public void Notify()
-            {
-                foreach (Observer observer in observers) observer.SubjectChanged();
+                if (iterator == first) first = iterator.right;
+                iterator = iterator.left;
             }
         }
+        rate--;
+    }
+    public int size()
+    {
+        return rate;
+    }
+    public list getIteratorPTR()
+    {
+        return iterator;
+    }
+    public list getCurPTR()
+    {
+        return current;
+    }
+    public void setCurPTR()
+    {
+        current = iterator;
+    }
+    public bool isChecked()
+    {
+        if (iterator.isChecked == true) return true; else return false;
+    }
+    public void check()
+    {
+        iterator.isChecked = !iterator.isChecked;
+    }
+    public MStorage getIterator()
+    {
+        return (iterator.data);
+    }
+    public MStorage get()
+    {
+        return (current.data);
+    }
+}
