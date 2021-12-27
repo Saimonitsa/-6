@@ -27,14 +27,25 @@ namespace лаба_ооп6
                 if (e.KeyChar == 115) MyStorage.get().OffsetXY(0, 1);
                 if (e.KeyChar == 97) MyStorage.get().OffsetXY(-1, 0);
                 if (e.KeyChar == 100) MyStorage.get().OffsetXY(1, 0);
-                if (e.KeyChar == 98) MyStorage.get().Grow(1);
-                if (e.KeyChar == 118) MyStorage.get().Grow(-1);
+                if (e.KeyChar == 43) MyStorage.get().Grow(1);
+                if (e.KeyChar == 45) MyStorage.get().Grow(-1);
+                if (e.KeyChar == 122) MyStorage.prevCur();
+                if (e.KeyChar == 120) MyStorage.nextCur();
+                if (e.KeyChar == 8) MyStorage.del();
+                if (e.KeyChar == 32)
+                {
+                    while (MyStorage.size() != 0) MyStorage.del();
+                    pictureBox1.Invalidate();
+                }
+
+
+
                 if (e.KeyChar == 110)
                 {
                     while (MyStorage.size() != 0) MyStorage.del();
                     pictureBox1.Invalidate();
                 }
-                if (e.KeyChar == 112)
+                if (e.KeyChar == 99)
                 {
 
                     if (colorDialog1.ShowDialog() == DialogResult.OK) MyStorage.get().SetColor(colorDialog1.Color);
@@ -50,7 +61,7 @@ namespace лаба_ооп6
                 if (e.KeyChar == 51)
                 {
                     int rad = rnd.Next(10, 100);
-                    MyStorage.add(new Square(rnd.Next(4, pictureBox1.Width - 50), rnd.Next(4, pictureBox1.Height - 50), rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width - 50, pictureBox1.Height - 50));
+                    MyStorage.add(new Rhombus(rnd.Next(4, pictureBox1.Width - 50), rnd.Next(4, pictureBox1.Height - 50), rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width - 50, pictureBox1.Height - 50));
                 }
                 if (e.KeyChar == 50)
                 {
@@ -114,7 +125,7 @@ namespace лаба_ооп6
                 {
                     Random rnd = new Random();
                     int rad = rnd.Next(10, 100);
-                    MyStorage.add(new Square(e.X, e.Y, rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
+                    MyStorage.add(new Rhombus(e.X, e.Y, rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
                 }
                 else
                 if (radioButton3.Checked == true)
@@ -226,12 +237,12 @@ public class CCircle : Shape
         if (Math.Pow(X - _x, 2) + Math.Pow(Y - _y, 2) <= R * R) return true; else return false;
     }
 }
-public class Square : CCircle
+public class Rhombus : CCircle
 {
     private int n = 4;
     List<PointF> first;
 
-    public Square(int x, int y, int r, Color c, int Width, int Height) : base(x, y, r, c, Width, Height)
+    public Rhombus(int x, int y, int r, Color c, int Width, int Height) : base(x, y, r, c, Width, Height)
     {
 
         if (r > x) r = x;
