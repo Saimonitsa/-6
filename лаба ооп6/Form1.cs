@@ -27,8 +27,8 @@ namespace лаба_ооп6
                 if (e.KeyChar == 115) MyStorage.get().OffsetXY(0, 1);
                 if (e.KeyChar == 97) MyStorage.get().OffsetXY(-1, 0);
                 if (e.KeyChar == 100) MyStorage.get().OffsetXY(1, 0);
-                if (e.KeyChar == 43) MyStorage.get().Grow(1);
-                if (e.KeyChar == 45) MyStorage.get().Grow(-1);
+                if (e.KeyChar == 98) MyStorage.get().Grow(1);
+                if (e.KeyChar == 118) MyStorage.get().Grow(-1);
                 if (e.KeyChar == 122) MyStorage.prevCur();
                 if (e.KeyChar == 120) MyStorage.nextCur();
                 if (e.KeyChar == 8) MyStorage.del();
