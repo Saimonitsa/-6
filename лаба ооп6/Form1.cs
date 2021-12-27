@@ -12,7 +12,7 @@ namespace лаба_ооп6
 {
     public partial class Form1 : Form
     {
-        Storage<Shape> myStorage = new Storage<Shape>();
+        Storage<Shape> MyStorage = new Storage<Shape>();
         public Form1()
         {
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace лаба_ооп6
             abstract public void DrawRectangle(System.Drawing.Graphics e, Pen pen);
             abstract public bool Find(int _x, int _y);
             abstract public Rectangle GetRectangle();  //получить границы фигуры для контроля выхода за пределы
-
+        }
             public void PressEventHandler(object sender, KeyPressEventArgs e)
             {
                 if (MyStorage.size() != 0)
@@ -214,7 +214,7 @@ namespace лаба_ооп6
                     if (Math.Pow(x - _x, 2) + Math.Pow(y - _y, 2) <= R * radius) return true; else return false;
                 }
             }
-        }
+        
     }
 };
 
