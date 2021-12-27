@@ -145,6 +145,8 @@ namespace лаба_ооп6
             pictureBox1.Focus();
 
         }
+
+        
     }
 
 };

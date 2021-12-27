@@ -44,6 +44,7 @@ namespace лаба_ооп6
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -87,10 +88,10 @@ namespace лаба_ооп6
             this.radioButton2.AutoSize = true;
             this.radioButton2.Location = new System.Drawing.Point(4, 41);
             this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(84, 21);
+            this.radioButton2.Size = new System.Drawing.Size(63, 21);
             this.radioButton2.TabIndex = 1;
             this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "Квадрат";
+            this.radioButton2.Text = "Ромб";
             this.radioButton2.UseVisualStyleBackColor = true;
             // 
             // radioButton1
@@ -106,6 +107,7 @@ namespace лаба_ооп6
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.label6);
@@ -187,9 +189,18 @@ namespace лаба_ооп6
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(15, 28);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(138, 17);
+            this.label2.Size = new System.Drawing.Size(118, 17);
             this.label2.TabIndex = 4;
-            this.label2.Text = "2 - создать квадрат";
+            this.label2.Text = "2 - создать ромб";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(15, 147);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(188, 17);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Пробел - очистить область";
             // 
             // Form1
             // 
@@ -227,6 +238,7 @@ namespace лаба_ооп6
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Label label9;
     }
 }
 
