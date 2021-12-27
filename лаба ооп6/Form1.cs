@@ -63,7 +63,23 @@ namespace лаба_ооп6
         }
 
 
-        private void pictureBox1_MouseDown(object sender, MouseEventArgs e)
+
+        private void pictureBox1_Paint_1(object sender, PaintEventArgs e)
+        {
+            if (MyStorage.size() != 0)
+            {
+                MyStorage.toFirst();
+                for (int i = 0; i < MyStorage.size(); i++, MyStorage.next())
+                {
+                    MyStorage.getIterator().DrawObj(e.Graphics);
+                    if (MyStorage.isChecked() == true) MyStorage.getIterator().DrawRectangle(e.Graphics, new Pen(Color.Gray, 2));
+                }
+                MyStorage.get().DrawRectangle(e.Graphics, new Pen(Color.Red, 1));
+            }
+
+        }
+
+        private void pictureBox1_MouseDown_1(object sender, MouseEventArgs e)
         {
             bool isFinded = false;
             if (MyStorage.size() != 0)
@@ -110,26 +126,13 @@ namespace лаба_ооп6
 
             }
             pictureBox1.Invalidate();
-        }
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
-        {
-            if (MyStorage.size() != 0)
-            {
-                MyStorage.toFirst();
-                for (int i = 0; i < MyStorage.size(); i++, MyStorage.next())
-                {
-                    MyStorage.getIterator().DrawObj(e.Graphics);
-                    if (MyStorage.isChecked() == true) MyStorage.getIterator().DrawRectangle(e.Graphics, new Pen(Color.Gray, 2));
-                }
-                MyStorage.get().DrawRectangle(e.Graphics, new Pen(Color.Red, 1));
-            }
         }
-
 
         private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
         {
             pictureBox1.Focus();
+
         }
     }
 
