@@ -7,6 +7,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
+using System.Reflection;
+
 
 namespace лаба_ооп6
 {
@@ -43,6 +46,24 @@ namespace лаба_ооп6
                     pictureBox1.Invalidate();
                 }
 
+                if (e.KeyChar == 111)
+                {
+                    if (MyStorage.get() is Rhombus) ((Rhombus)MyStorage.get()).growN(1);
+                    if (MyStorage.get() is Triangle) ((Triangle)MyStorage.get()).growN(1);
+                }
+                if (e.KeyChar == 112)
+                {
+                    if (MyStorage.get() is Rhombus) ((Rhombus)MyStorage.get()).growN(-1);
+                    if (MyStorage.get() is Triangle) ((Triangle)MyStorage.get()).growN(-1);
+                }
+                if (e.KeyChar == 46)
+                {
+                    MyStorage.get().Rotate(2);
+                }
+                if (e.KeyChar == 44)
+                {
+                    MyStorage.get().Rotate(-2);
+                }
 
 
                 if (e.KeyChar == 110)
@@ -51,6 +72,11 @@ namespace лаба_ооп6
                     pictureBox1.Invalidate();
                 }
                 if (e.KeyChar == 99)
+                {
+
+                    if (colorDialog1.ShowDialog() == DialogResult.OK) MyStorage.get().SetColor(colorDialog1.Color);
+                }
+                if (e.KeyChar == 107)
                 {
 
                     if (colorDialog1.ShowDialog() == DialogResult.OK) MyStorage.get().SetColor(colorDialog1.Color);
@@ -66,12 +92,12 @@ namespace лаба_ооп6
                 if (e.KeyChar == 51)
                 {
                     int rad = rnd.Next(10, 100);
-                    MyStorage.add(new Rhombus(rnd.Next(4, pictureBox1.Width - 50), rnd.Next(4, pictureBox1.Height - 50), rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width - 50, pictureBox1.Height - 50));
+                    MyStorage.add(new Rhombus(rnd.Next(4, pictureBox1.Width - 50), rnd.Next(4, pictureBox1.Height - 50), rad, 4, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width - 50, pictureBox1.Height - 50));
                 }
                 if (e.KeyChar == 50)
                 {
                     int rad = rnd.Next(10, 100);
-                    MyStorage.add(new Triangle(rnd.Next(4, pictureBox1.Width - 50), rnd.Next(4, pictureBox1.Height - 50), rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width - 50, pictureBox1.Height - 50));
+                    MyStorage.add(new Triangle(rnd.Next(4, pictureBox1.Width - 50), rnd.Next(4, pictureBox1.Height - 50), rad, 3, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width - 50, pictureBox1.Height - 50));
                 }
 
             }
@@ -131,17 +157,25 @@ namespace лаба_ооп6
                 {
                     Random rnd = new Random();
                     int rad = rnd.Next(10, 100);
-                    MyStorage.add(new Rhombus(e.X, e.Y, rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
+                    MyStorage.add(new Rhombus(e.X, e.Y, rad, 4, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
+                    ((Rhombus)MyStorage.get()).Rotate(rnd.Next(0, 180));
                 }
                 else
                 if (radioButton3.Checked == true)
                 {
                     Random rnd = new Random();
                     int rad = rnd.Next(10, 100);
-                    MyStorage.add(new Triangle(e.X, e.Y, rad, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
-                }
+                    MyStorage.add(new Triangle(e.X, e.Y, rad, 3, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
+                    ((Triangle)MyStorage.get()).Rotate(rnd.Next(0, 180));
 
+                }
+                if (checkBox1.Checked)
+                {
+                    MyStorage.get().sticky = true;
+                    MyStorage.get().AddStorage(MyStorage);
+                }
             }
+            if (isFinded == true && MyStorage.get().sticky == true) checkBox1.Checked = true; else checkBox1.Checked = false;
             pictureBox1.Invalidate();
 
         }
@@ -330,11 +364,22 @@ namespace лаба_ооп6
 
 
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (MyStorage.size() != 0 && !(MyStorage.get() is SGroup))
+            {
+                MyStorage.get().sticky = checkBox1.Checked;
+                if (checkBox1.Checked == true) MyStorage.get().AddStorage(MyStorage);
+            }
+
+        }
     }
 
 };
 public abstract class Shape : ObjObserved
 {
+    public string name; //имена для всех объектов и групп
     protected Rectangle rect; //область объекта для его отрисовки и выделения
     protected int X, Y, width, height; //x, y для позиции объектов и групп, w и h для учитывания границ отрисовки
     public bool sticky = false;
@@ -343,9 +388,11 @@ public abstract class Shape : ObjObserved
     abstract public void OffsetXY(int _x, int _y);
     abstract public void SetColor(Color c);
     abstract public void Grow(int gr);
+    abstract public void Rotate(int gr);
     abstract public void DrawObj(System.Drawing.Graphics e);
     abstract public void DrawRectangle(System.Drawing.Graphics e, Pen pen);
     abstract public bool Find(int _x, int _y);
+    abstract public bool Find(Shape obj);
     abstract public void Clone();
     abstract public Rectangle GetRectangle();  //получить границы фигуры для контроля выхода за пределы
     abstract public void Save(StreamWriter stream);
@@ -459,14 +506,14 @@ public class SGroup : Shape
                     rect.X = storage.getIterator().GetRectangle().Left;
                     rect.Width = tmp - rect.X;
                 }
-                if (storage.getIterator().GetRectangle().Right > rect.Right) rect.Width = sto.getIterator().GetRectangle().Right - rect.X;
+                if (storage.getIterator().GetRectangle().Right > rect.Right) rect.Width = storage.getIterator().GetRectangle().Right - rect.X;
                 if (storage.getIterator().GetRectangle().Top < rect.Top)
                 {
                     int tmp = rect.Bottom;
                     rect.Y = storage.getIterator().GetRectangle().Top;
                     rect.Height = tmp - rect.Y;
                 }
-                if (storage.getIterator().GetRectangle().Bottom > rect.Bottom) rect.Height = sto.getIterator().GetRectangle().Bottom - rect.Y;
+                if (storage.getIterator().GetRectangle().Bottom > rect.Bottom) rect.Height = storage.getIterator().GetRectangle().Bottom - rect.Y;
             }
         }
     }
@@ -1008,8 +1055,83 @@ public class Triangle : CCircle
 
 
 }
+class DPanel : Panel
+{
+    public DPanel()
+    {
+        this.DoubleBuffered = true;
+        this.ResizeRedraw = true;
+    }
+}
 
+public class Observer
+{
+    public virtual void SubjectChanged() { return; }
+}
 
+class Tree : Observer
+{
+    private Storage<Shape> sto1;
+    private TreeView tree1;
+    public Tree(Storage<Shape> sto, TreeView tree)
+    {
+        this.sto1 = sto;
+        this.tree1 = tree;
+    }
+
+    public void Print()
+    {
+        tree1.Nodes.Clear();
+        if (sto1.size() != 0)
+        {
+            int SelectedIndex = 0;
+            TreeNode start = new TreeNode("Фигуры");
+            sto1.toFirst();
+            for (int i = 0; i < sto1.size(); i++, sto1.next())
+            {
+                if (sto1.getCurPTR() == sto1.getIteratorPTR()) SelectedIndex = i;
+                PrintNode(start, sto1.getIterator());
+            }
+            tree1.Nodes.Add(start);
+
+            for (int i = 0; i < sto1.size(); i++)
+            {
+                sto1.next();
+                tree1.SelectedNode = tree1.Nodes[0].Nodes[i];
+                if (sto1.isChecked() == true)
+                    tree1.SelectedNode.ForeColor = Color.Red;
+                else tree1.SelectedNode.ForeColor = Color.Black;
+            }
+        }
+        tree1.ExpandAll();
+
+    }
+
+    private void PrintNode(TreeNode node, Shape shape)
+    {
+        if (shape is SGroup)
+        {
+            TreeNode tn = new TreeNode(shape.GetInfo());
+            if (((SGroup)shape).storage.size() != 0)
+            {
+                ((SGroup)shape).storage.toFirst();
+                for (int i = 0; i < ((SGroup)shape).storage.size(); i++, ((SGroup)shape).storage.next())
+                    PrintNode(tn, ((SGroup)shape).storage.getIterator());
+            }
+            node.Nodes.Add(tn);
+        }
+        else
+        {
+
+            node.Nodes.Add(shape.GetInfo());
+        }
+    }
+
+    public override void SubjectChanged()
+    {
+        Print();
+    }
+}
 
 public class ObjObserved
 {
@@ -1017,6 +1139,22 @@ public class ObjObserved
     public void AddStorage(Storage<Shape> MyStorage)
     {
         storage = MyStorage;
+    }
+}
+public class Observed
+{
+    private List<Observer> observers;
+    public Observed()
+    {
+        observers = new List<Observer>();
+    }
+    public void AddObserver(Observer o)
+    {
+        observers.Add(o);
+    }
+    public void Notify()
+    {
+        foreach (Observer observer in observers) observer.SubjectChanged();
     }
 }
 
@@ -1061,6 +1199,7 @@ public class Storage<MStorage>
         current = tmp;
         first.left = last;
         rate++;
+        Notify();
     }
     public void addBefore(MStorage figure)
     {
@@ -1127,10 +1266,12 @@ public class Storage<MStorage>
     public void nextCur()
     {
         current = current.right;
+        Notify();
     }
     public void prevCur()
     {
         current = current.left;
+        Notify();
     }
     public void del()
     {
@@ -1157,6 +1298,7 @@ public class Storage<MStorage>
             }
         }
         rate--;
+        Notify();
     }
     public void delIterator()
     {
@@ -1182,6 +1324,7 @@ public class Storage<MStorage>
             }
         }
         rate--;
+        Notify();
     }
     public int size()
     {
@@ -1217,74 +1360,3 @@ public class Storage<MStorage>
     }
 }
 
-// для лаб.работы 7 и 8 
-
-
-public class Watch
-{
-    public virtual void SubjectChanged() { return; }
-}
-
-class Tree : Watch
-{
-    private Storage<Shape> sto;
-    private TreeView tree;
-    public Tree(Storage<Shape> sto, TreeView tree)
-    {
-        this.sto = sto;
-        this.tree = tree;
-    }
-
-    public void Print()
-    {
-        tree.Nodes.Clear();
-        if (sto.size() != 0)
-        {
-            int SelectedIndex = 0;
-            TreeNode start = new TreeNode("Фигуры");
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next())
-            {
-                if (sto.getCurPTR() == sto.getIteratorPTR()) SelectedIndex = i;
-                PrintNode(start, sto.getIterator());
-            }
-            tree.Nodes.Add(start);
-
-            for (int i = 0; i < sto.size(); i++)
-            {
-                sto.next();
-                tree.SelectedNode = tree.Nodes[0].Nodes[i];
-                if (sto.isChecked() == true)
-                    tree.SelectedNode.ForeColor = Color.Red;
-                else tree.SelectedNode.ForeColor = Color.Black;
-            }
-        }
-        tree.ExpandAll();
-
-    }
-    private void PrintNode(TreeNode node, Shape shape)
-    {
-        if (shape is SGroup)
-        {
-            TreeNode tn = new TreeNode(shape.GetInfo());
-            if (((SGroup)shape).sto.size() != 0)
-            {
-                ((SGroup)shape).sto.toFirst();
-                for (int i = 0; i < ((SGroup)shape).sto.size(); i++, ((SGroup)shape).sto.next())
-                    PrintNode(tn, ((SGroup)shape).sto.getIterator());
-            }
-            node.Nodes.Add(tn);
-        }
-        else
-        {
-
-            node.Nodes.Add(shape.GetInfo());
-        }
-    }
-
-
-    public override void SubjectChanged()
-    {
-        Print();
-    }
-}
