@@ -56,14 +56,7 @@ namespace лаба_ооп6
                     if (MyStorage.get() is Rhombus) ((Rhombus)MyStorage.get()).growN(-1);
                     if (MyStorage.get() is Triangle) ((Triangle)MyStorage.get()).growN(-1);
                 }
-                if (e.KeyChar == 46)
-                {
-                    MyStorage.get().Rotate(2);
-                }
-                if (e.KeyChar == 44)
-                {
-                    MyStorage.get().Rotate(-2);
-                }
+
 
 
                 if (e.KeyChar == 110)
@@ -158,7 +151,6 @@ namespace лаба_ооп6
                     Random rnd = new Random();
                     int rad = rnd.Next(10, 100);
                     MyStorage.add(new Rhombus(e.X, e.Y, rad, 4, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
-                    ((Rhombus)MyStorage.get()).Rotate(rnd.Next(0, 180));
                 }
                 else
                 if (radioButton3.Checked == true)
@@ -166,7 +158,7 @@ namespace лаба_ооп6
                     Random rnd = new Random();
                     int rad = rnd.Next(10, 100);
                     MyStorage.add(new Triangle(e.X, e.Y, rad, 3, Color.FromArgb(rnd.Next(0, 256), rnd.Next(0, 256), rnd.Next(0, 256)), pictureBox1.Width, pictureBox1.Height));
-                    ((Triangle)MyStorage.get()).Rotate(rnd.Next(0, 180));
+                   
 
                 }
                 if (checkBox1.Checked)
@@ -388,7 +380,6 @@ public abstract class Shape : ObjObserved
     abstract public void OffsetXY(int _x, int _y);
     abstract public void SetColor(Color c);
     abstract public void Grow(int gr);
-    abstract public void Rotate(int gr);
     abstract public void DrawObj(System.Drawing.Graphics e);
     abstract public void DrawRectangle(System.Drawing.Graphics e, Pen pen);
     abstract public bool Find(int _x, int _y);
@@ -633,15 +624,6 @@ public class SGroup : Shape
         return name + "    Size : " + sto.size().ToString();
     }
 
-    public override void Rotate(int gr)
-    {
-        if (sto.size() != 0)
-        {
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Rotate(gr);
-        }
-    }
-
     public override bool Find(Shape obj)
     {
         if (sto.size() != 0)
@@ -766,10 +748,7 @@ public class CCircle : Shape
         return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString();
     }
 
-    public override void Rotate(int gr)
-    {
 
-    }
     public override bool Find(Shape obj)
     {
         string[] data = obj.GetInfo().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
@@ -787,8 +766,7 @@ public class CCircle : Shape
 }
 public class Rhombus : CCircle
 {
-    private int n = 4;
-    private int rotate = 0;
+    private int n;
     List<PointF> first;
     public Rhombus() : base()
     {
@@ -840,15 +818,9 @@ public class Rhombus : CCircle
         Y = Convert.ToInt32(data[1]);
         R = Convert.ToInt32(data[2]);
         n = Convert.ToInt32(data[3]);
-        rotate = Convert.ToInt32(data[4]);
         color = Color.FromArgb(Convert.ToInt32(data[5]), Convert.ToInt32(data[6]), Convert.ToInt32(data[7]));
         width = Convert.ToInt32(data[8]);
         height = Convert.ToInt32(data[9]);
-        Resize();
-    }
-    public override void Rotate(int gr)
-    {
-        rotate += gr;
         Resize();
     }
 
@@ -876,11 +848,11 @@ public class Rhombus : CCircle
     {
         first = null;
         first = new List<PointF>();
-        for (int i = rotate; i < rotate + 360; i += 360 / n)
+        for (int i = 0; i < 360; i += 360 / n)
         {
             double radiani = (double)(i * 3.14) / 180;
             float xx = X + (int)(R * Math.Cos(radiani));
-            float yy = X + (int)(R * Math.Sin(radiani));
+            float yy = Y + (int)(R * Math.Sin(radiani));
             first.Add(new PointF(xx, yy));
         }
 
@@ -904,7 +876,7 @@ public class Rhombus : CCircle
     public override void Save(StreamWriter stream)
     {
         stream.WriteLine("Rhombus");
-        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + rotate + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
     }
 
 
@@ -922,7 +894,7 @@ public class Rhombus : CCircle
 
 public class Triangle : CCircle
 {
-    private int n = 4;
+    private int n;
     private int rotate = 0;
     List<PointF> first;
     public Triangle() : base()
@@ -981,11 +953,6 @@ public class Triangle : CCircle
         height = Convert.ToInt32(data[9]);
         Resize();
     }
-    public override void Rotate(int gr)
-    {
-        rotate += gr;
-        Resize();
-    }
 
     public override void OffsetXY(int _x, int _y)
     {
@@ -1011,11 +978,11 @@ public class Triangle : CCircle
     {
         first = null;
         first = new List<PointF>();
-        for (int i = rotate; i < rotate + 360; i += 360 / n)
+        for (int i = 0; i < 360; i += 360 / n)
         {
             double radiani = (double)(i * 3.14) / 180;
             float xx = X + (int)(R * Math.Cos(radiani));
-            float yy = X + (int)(R * Math.Sin(radiani));
+            float yy = Y + (int)(R * Math.Sin(radiani));
             first.Add(new PointF(xx, yy));
         }
 
