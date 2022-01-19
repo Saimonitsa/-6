@@ -1079,11 +1079,11 @@ class Tree : Observer
         if (shape is SGroup)
         {
             TreeNode tn = new TreeNode(shape.GetInfo());
-            if (((SGroup)shape).storage.size() != 0)
+            if (((SGroup)shape).sto.size() != 0)
             {
-                ((SGroup)shape).storage.toFirst();
-                for (int i = 0; i < ((SGroup)shape).storage.size(); i++, ((SGroup)shape).storage.next())
-                    PrintNode(tn, ((SGroup)shape).storage.getIterator());
+                ((SGroup)shape).sto.toFirst();
+                for (int i = 0; i < ((SGroup)shape).sto.size(); i++, ((SGroup)shape).sto.next())
+                    PrintNode(tn, ((SGroup)shape).sto.getIterator());
             }
             node.Nodes.Add(tn);
         }
