@@ -13,6 +13,7 @@ namespace лаба_ооп6
     public partial class Form1 : Form
     {
         Storage<Shape> MyStorage = new Storage<Shape>();
+        
         public Form1()
         {
             InitializeComponent();
@@ -590,5 +591,53 @@ public class Storage<MStorage>
     public MStorage get()
     {
         return (current.data);
+    }
+}
+
+// для лаб.работы 7 и 8 
+
+
+public class Watch
+{
+    public virtual void SubjectChanged() { return; }
+}
+
+class Tree : Watch
+{
+    private Storage<Shape> sto;
+    private TreeView tree;
+    public Tree(Storage<Shape> sto, TreeView tree)
+    {
+        this.sto = sto;
+        this.tree = tree;
+    }
+
+    public void Print()
+    {
+        tree.Nodes.Clear();
+        if (sto.size() != 0)
+        {
+            int SelectedIndex = 0;
+            TreeNode start = new TreeNode("Фигуры");
+            sto.toFirst();
+            tree.Nodes.Add(start);
+
+            for (int i = 0; i < sto.size(); i++)
+            {
+                sto.next();
+                tree.SelectedNode = tree.Nodes[0].Nodes[i];
+                if (sto.isChecked() == true)
+                    tree.SelectedNode.ForeColor = Color.Red;
+                else tree.SelectedNode.ForeColor = Color.Black;
+            }
+        }
+        tree.ExpandAll();
+
+    }
+
+
+    public override void SubjectChanged()
+    {
+        Print();
     }
 }
