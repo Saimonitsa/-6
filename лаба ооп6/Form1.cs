@@ -698,26 +698,43 @@ public class CCircle : Shape
 public class Rhombus : CCircle
 {
     private int n = 4;
+    private int rotate = 0;
     List<PointF> first;
-
-    public Rhombus(int x, int y, int r, Color c, int Width, int Height) : base(x, y, r, c, Width, Height)
+    public Rhombus() : base()
     {
+        name = "Rhombus";
+    }
 
+
+    public Rhombus(int x, int y, int r, int n, Color c, int Width, int Height) : base(x, y, r, c, Width, Height)
+    {
+        this.n = n;
         if (r > x) r = x;
         if (x + r > width) r = width - x;
         if (r > y) r = y;
         if (y + r > height) r = height - y;
         Resize();
+        name = "Rhombus";
+
+    }
+    public override void Clone()
+    {
+        throw new NotImplementedException();
     }
 
     public override void DrawObj(Graphics e)
     {
+        e.DrawPolygon(new Pen(Color.Black, 2), first.ToArray());
         e.FillPolygon(new SolidBrush(color), first.ToArray());
     }
 
     public override void DrawRectangle(Graphics e, Pen pen)
     {
         e.DrawRectangle(pen, rect);
+    }
+    public override bool Find(int _x, int _y)
+    {
+        if (rect.X < _x && _x < rect.Right && rect.Y < _y && _y < rect.Bottom) return true; else return false;
     }
 
     public override Rectangle GetRectangle()
@@ -730,9 +747,39 @@ public class Rhombus : CCircle
         if (R + inc < X && X + R + inc < width && R + inc < Y && Y + R + inc < height && R + inc > 0) R += inc;
         Resize();
     }
+    public override void Load(StreamReader stream)
+    {
+        string[] data = stream.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        X = Convert.ToInt32(data[0]);
+        Y = Convert.ToInt32(data[1]);
+        R = Convert.ToInt32(data[2]);
+        n = Convert.ToInt32(data[3]);
+        rotate = Convert.ToInt32(data[4]);
+        color = Color.FromArgb(Convert.ToInt32(data[5]), Convert.ToInt32(data[6]), Convert.ToInt32(data[7]));
+        width = Convert.ToInt32(data[8]);
+        height = Convert.ToInt32(data[9]);
+        Resize();
+    }
+    public override void Rotate(int gr)
+    {
+
+    }
 
     public override void OffsetXY(int _x, int _y)
     {
+        if (storage != null && storage.size() != 0 && sticky == true)
+        {
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next())
+            {
+                if (Find(storage.getIterator()) == true && storage.getIterator() != this)
+                {
+                    if (storage.getIterator().sticky == false)
+                        storage.getIterator().OffsetXY(_x, _y);
+                }
+            }
+        }
+
         if (X + _x > R && X + _x + R < width) X += _x;
         if (Y + _y > R && Y + _y + R < height) Y += _y;
         Resize();
@@ -740,20 +787,7 @@ public class Rhombus : CCircle
 
     public override void Resize()
     {
-        first = null;
-        first = new List<PointF>();
-        for (int i = 0; i < 360; i += 360 / n)
-        {
-            double radiani = (double)(i * 3.14) / 180;
-            float xx = X + (int)(R * Math.Cos(radiani));
-            float yy = Y + (int)(R * Math.Sin(radiani));
-            first.Add(new PointF(xx, yy));
-        }
         rect = new Rectangle(X - R, Y - R, 2 * R, 2 * R);
-    }
-    public override void Clone()
-    {
-        throw new NotImplementedException();
     }
 
     public override void SetColor(Color c)
@@ -763,7 +797,7 @@ public class Rhombus : CCircle
 
     public override void SetXY(int _x, int _y)
     {
-
+        throw new NotImplementedException();
     }
 
     public override bool Find(int _x, int _y)
@@ -772,8 +806,8 @@ public class Rhombus : CCircle
     }
     public override void Save(StreamWriter stream)
     {
-        stream.WriteLine("Circle");
-        stream.WriteLine((rect.X + R) + " " + (rect.Y + R) + " " + R + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+        stream.WriteLine("Rhombus");
+        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + rotate + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
     }
 
     public override void Load(StreamReader stream)
