@@ -35,6 +35,7 @@ namespace лаба_ооп6
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -44,7 +45,7 @@ namespace лаба_ооп6
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
-            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -107,6 +108,7 @@ namespace лаба_ооп6
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label10);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.label8);
             this.panel2.Controls.Add(this.label7);
@@ -118,8 +120,17 @@ namespace лаба_ооп6
             this.panel2.Controls.Add(this.label2);
             this.panel2.Location = new System.Drawing.Point(600, 218);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(200, 220);
+            this.panel2.Size = new System.Drawing.Size(216, 220);
             this.panel2.TabIndex = 2;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(15, 147);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(188, 17);
+            this.label9.TabIndex = 3;
+            this.label9.Text = "Пробел - очистить область";
             // 
             // label8
             // 
@@ -193,20 +204,20 @@ namespace лаба_ооп6
             this.label2.TabIndex = 4;
             this.label2.Text = "2 - создать ромб";
             // 
-            // label9
+            // label10
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 147);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(188, 17);
-            this.label9.TabIndex = 3;
-            this.label9.Text = "Пробел - очистить область";
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(15, 164);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(194, 17);
+            this.label10.TabIndex = 11;
+            this.label10.Text = "Backspace - удалить объект";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(795, 450);
+            this.ClientSize = new System.Drawing.Size(822, 450);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pictureBox1);
@@ -239,6 +250,7 @@ namespace лаба_ооп6
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label label10;
     }
 }
 
