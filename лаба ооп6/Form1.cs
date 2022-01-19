@@ -270,6 +270,46 @@ namespace лаба_ооп6
             pictureBox1.Invalidate();
 
         }
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            TreeNode tmp = e.Node;
+
+            if (e.Button == MouseButtons.Right)
+            {
+                MyStorage.toFirst();
+                MyStorage.setCurPTR();
+
+                for (int i = 0; i < tmp.Index; i++)
+                {
+                    MyStorage.nextCur();
+                }
+                if (MyStorage.size() != 0 && MyStorage.get() is SGroup)
+                {
+                    while (((SGroup)MyStorage.get()).size() != 0)
+                    {
+                        MyStorage.addAfter(((SGroup)MyStorage.get()).Out());
+                        MyStorage.prevCur();
+                    }
+                    MyStorage.del();
+                }
+            }
+            if (e.Button == MouseButtons.Left)
+            {
+
+                treeView1.SelectedNode = tmp;
+
+                MyStorage.toFirst();
+                for (int i = 0; i <= treeView1.SelectedNode.Index; i++)
+                {
+                    MyStorage.next();
+                }
+                MyStorage.check();
+
+            }
+            pictureBox1.Invalidate();
+
+        }
     }
 
 };
