@@ -18,8 +18,8 @@ namespace лаба_ооп6
         {
             InitializeComponent();
             (pictureBox1 as Control).KeyPress += new KeyPressEventHandler(PressEventHandler);
-            tree = new Tree(sto, treeView1);
-            sto.AddObserver(tree);
+            tree = new Tree(MyStorage, treeView1);
+            MyStorage.AddObserver(tree);
             treeView1.CheckBoxes = true;
 
         }
@@ -152,7 +152,124 @@ namespace лаба_ооп6
 
         }
 
-        
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                FileStream f = new FileStream(saveFileDialog1.FileName, FileMode.Create);
+                StreamWriter stream = new StreamWriter(f);
+                stream.WriteLine(MyStorage.size());
+                if (MyStorage.size() != 0)
+                {
+                    MyStorage.toFirst();
+                    for (int i = 0; i < MyStorage.size(); i++, MyStorage.next()) MyStorage.getIterator().Save(stream);
+                }
+                stream.Close();
+                f.Close();
+            }
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (MyStorage.size() != 0)
+            {
+                SGroup group = new SGroup(pictureBox1.Width, pictureBox1.Height);
+                MyStorage.toFirst();
+                int cnt = 0;
+                for (int i = 0; i < MyStorage.size(); i++, MyStorage.next()) //считаем количество отмеченных элементов
+                    if (MyStorage.isChecked() == true) cnt++;
+                while (cnt != 0)
+                {
+                    if (MyStorage.isChecked() == true)
+                    {
+                        group.Add(MyStorage.getIterator());
+                        MyStorage.delIterator();
+                        cnt--;
+                    }
+                    if (MyStorage.size() != 0) MyStorage.next();
+                }
+                MyStorage.add(group);
+            }
+            pictureBox1.Invalidate();
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            while (MyStorage.size() != 0) MyStorage.del();
+            pictureBox1.Invalidate();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+
+                if (MyStorage.size() != 0 && MyStorage.get() is SGroup)
+                {
+                    while (((SGroup)MyStorage.get()).size() != 0)
+                    {
+                    MyStorage.addAfter(((SGroup)MyStorage.get()).Out());
+                    MyStorage.prevCur();
+                    }
+                MyStorage.del();
+                }
+                pictureBox1.Invalidate();
+            
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                FileStream f = new FileStream(openFileDialog1.FileName, FileMode.Open);
+                StreamReader stream = new StreamReader(f);
+                int i = Convert.ToInt32(stream.ReadLine());
+                Factory shapeFactory = new ShapeFactory();  //фабрика КОНКРЕТНЫХ объектов
+                for (; i > 0; i--)
+                {
+                    string tmp = stream.ReadLine();
+                    MyStorage.add(shapeFactory.createShape(tmp));
+                    MyStorage.get().Load(stream);
+                }
+                stream.Close();
+                f.Close();
+            }
+            pictureBox1.Invalidate();
+            tree.Print();
+
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if ((e.Action == TreeViewAction.ByKeyboard || e.Action == TreeViewAction.ByMouse) && e.Node.Text != "Фигуры")
+            {
+
+
+                TreeNode tmp = e.Node;
+
+                while (tmp.Parent.Text != "Фигуры") tmp = tmp.Parent;
+                treeView1.SelectedNode = tmp;
+                MyStorage.toFirst();
+                MyStorage.setCurPTR();
+                for (int i = 0; i < tmp.Index; i++)
+                {
+
+                    MyStorage.nextCur();
+                }
+                MyStorage.setCurPTR();
+            }
+
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            if (MyStorage.size() != 0)
+                MyStorage.del();
+            pictureBox1.Invalidate();
+
+        }
     }
 
 };
