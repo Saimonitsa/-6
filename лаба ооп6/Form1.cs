@@ -348,6 +348,10 @@ public abstract class Shape : ObjObserved
     abstract public bool Find(int _x, int _y);
     abstract public void Clone();
     abstract public Rectangle GetRectangle();  //получить границы фигуры для контроля выхода за пределы
+    abstract public void Save(StreamWriter stream);
+    abstract public void Load(StreamReader stream);
+    abstract public string GetInfo();
+
 }
 
 public abstract class Factory
@@ -766,25 +770,73 @@ public class Rhombus : CCircle
     {
         if (Math.Pow(X - _x, 2) + Math.Pow(Y - _y, 2) <= R * R) return true; else return false;
     }
+    public override void Save(StreamWriter stream)
+    {
+        stream.WriteLine("Circle");
+        stream.WriteLine((rect.X + R) + " " + (rect.Y + R) + " " + R + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+    }
+
+    public override void Load(StreamReader stream)
+    {
+        string[] data = stream.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        X = Convert.ToInt32(data[0]);
+        Y = Convert.ToInt32(data[1]);
+        R = Convert.ToInt32(data[2]);
+        color = Color.FromArgb(Convert.ToInt32(data[3]), Convert.ToInt32(data[4]), Convert.ToInt32(data[5]));
+        width = Convert.ToInt32(data[6]);
+        height = Convert.ToInt32(data[7]);
+        Resize();
+    }
+
+    public override string GetInfo()
+    {
+        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString();
+    }
+
+    public override bool Find(Shape obj)
+    {
+        string[] data = obj.GetInfo().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (data[0] != "Group")
+        {
+            int _x = Convert.ToInt32(data[2]);
+            int _y = Convert.ToInt32(data[4]);
+            int _rad = Convert.ToInt32(data[6]);
+            if (Math.Pow(X - _x, 2) + Math.Pow(Y - _y, 2) <= Math.Pow(R + _rad, 2)) return true;
+        }
+        else return obj.Find(this); //просим группу поискать нас
+        return false;
+    }
+
 }
 
 public class Triangle : CCircle
 {
     private int n = 3;
+    private int rotate = 0;
     List<PointF> first;
-
-    public Triangle(int x, int y, int r, Color c, int Width, int Height) : base(x, y, r, c, Width, Height)
+    public Triangle() : base()
     {
+        name = "Triangle";
+    }
 
+    public Triangle(int x, int y, int r, int n, Color c, int Width, int Height) : base(x, y, r, c, Width, Height)
+    {
+        this.n = n;
         if (r > x) r = x;
         if (x + r > width) r = width - x;
         if (r > y) r = y;
         if (y + r > height) r = height - y;
         Resize();
+        name = "Triangle";
+    }
+    public override void Clone()
+    {
+        throw new NotImplementedException();
     }
 
     public override void DrawObj(Graphics e)
     {
+        e.DrawPolygon(new Pen(Color.Black, 2), first.ToArray());
         e.FillPolygon(new SolidBrush(color), first.ToArray());
     }
 
@@ -797,6 +849,23 @@ public class Triangle : CCircle
     {
         return rect;
     }
+    public override bool Find(int _x, int _y)
+    {
+        if (rect.X < _x && _x < rect.Right && rect.Y < _y && _y < rect.Bottom) return true; else return false;
+    }
+    public override void Load(StreamReader stream)
+    {
+        string[] data = stream.ReadLine().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        X = Convert.ToInt32(data[0]);
+        Y = Convert.ToInt32(data[1]);
+        R = Convert.ToInt32(data[2]);
+        n = Convert.ToInt32(data[3]);
+        rotate = Convert.ToInt32(data[4]);
+        color = Color.FromArgb(Convert.ToInt32(data[5]), Convert.ToInt32(data[6]), Convert.ToInt32(data[7]));
+        width = Convert.ToInt32(data[8]);
+        height = Convert.ToInt32(data[9]);
+        Resize();
+    }
 
     public override void Grow(int inc)
     {
@@ -806,16 +875,36 @@ public class Triangle : CCircle
 
     public override void OffsetXY(int _x, int _y)
     {
+        if (storage != null && storage.size() != 0 && sticky == true)
+        {
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next())
+            {
+                if (Find(storage.getIterator()) == true && storage.getIterator() != this)
+                {
+                    if (storage.getIterator().sticky == false)
+                        storage.getIterator().OffsetXY(_x, _y);
+                }
+            }
+        }
+
         if (X + _x > R && X + _x + R < width) X += _x;
         if (Y + _y > R && Y + _y + R < height) Y += _y;
         Resize();
     }
 
+    public override void Save(StreamWriter stream)
+    {
+        stream.WriteLine("Triangle");
+        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + rotate + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+    }
+
+
     public override void Resize()
     {
         first = null;
         first = new List<PointF>();
-        for (int i = 0; i < 360; i += 360 / n)
+        for (int i = rotate; i < rotate + 360; i += 360 / n)
         {
             double radiani = (double)(i * 3.14) / 180;
             float xx = X + (int)(R * Math.Cos(radiani));
