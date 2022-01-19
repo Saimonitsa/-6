@@ -435,11 +435,11 @@ public class ShapeFactory : Factory
 
 public class SGroup : Shape
 {
-    public Storage<Shape> storage;
+    public Storage<Shape> sto;
 
     public SGroup()
     {
-        storage = new Storage<Shape>();
+        sto = new Storage<Shape>();
         name = "Group";
     }
 
@@ -447,15 +447,15 @@ public class SGroup : Shape
     {
         width = Width;
         height = Height;
-        storage = new Storage<Shape>();
+        sto = new Storage<Shape>();
         name = "Group";
     }
 
     public void Add(Shape s)
     {
-        storage.add(s);
-        storage.get().sticky = false;
-        if (storage.size() == 1) rect = new Rectangle(s.GetRectangle().X, s.GetRectangle().Y, s.GetRectangle().Width, s.GetRectangle().Height);
+        sto.add(s);
+        sto.get().sticky = false;
+        if (sto.size() == 1) rect = new Rectangle(s.GetRectangle().X, s.GetRectangle().Y, s.GetRectangle().Width, s.GetRectangle().Height);
         else
         {
             if (s.GetRectangle().Left < rect.Left)
@@ -477,10 +477,10 @@ public class SGroup : Shape
 
     public Shape Out()
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
-            Shape tmp = storage.get();
-            storage.del();
+            Shape tmp = sto.get();
+            sto.del();
             Resize();
             return tmp;
         }
@@ -489,31 +489,31 @@ public class SGroup : Shape
 
     public int size()
     {
-        return storage.size();
+        return sto.size();
     }
 
     public override void Resize()
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
-            storage.toFirst();
-            rect = storage.getIterator().GetRectangle();
-            for (int i = 0; i < storage.size(); i++, storage.next())
+            sto.toFirst();
+            rect = sto.getIterator().GetRectangle();
+            for (int i = 0; i < sto.size(); i++, sto.next())
             {
-                if (storage.getIterator().GetRectangle().Left < rect.Left)
+                if (sto.getIterator().GetRectangle().Left < rect.Left)
                 {
                     int tmp = rect.Right;
-                    rect.X = storage.getIterator().GetRectangle().Left;
+                    rect.X = sto.getIterator().GetRectangle().Left;
                     rect.Width = tmp - rect.X;
                 }
-                if (storage.getIterator().GetRectangle().Right > rect.Right) rect.Width = storage.getIterator().GetRectangle().Right - rect.X;
-                if (storage.getIterator().GetRectangle().Top < rect.Top)
+                if (sto.getIterator().GetRectangle().Right > rect.Right) rect.Width = sto.getIterator().GetRectangle().Right - rect.X;
+                if (sto.getIterator().GetRectangle().Top < rect.Top)
                 {
                     int tmp = rect.Bottom;
-                    rect.Y = storage.getIterator().GetRectangle().Top;
+                    rect.Y = sto.getIterator().GetRectangle().Top;
                     rect.Height = tmp - rect.Y;
                 }
-                if (storage.getIterator().GetRectangle().Bottom > rect.Bottom) rect.Height = storage.getIterator().GetRectangle().Bottom - rect.Y;
+                if (sto.getIterator().GetRectangle().Bottom > rect.Bottom) rect.Height = sto.getIterator().GetRectangle().Bottom - rect.Y;
             }
         }
     }
@@ -525,16 +525,16 @@ public class SGroup : Shape
 
     public override void DrawObj(Graphics e)
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
-            storage.toFirst();
-            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().DrawObj(e);
+            sto.toFirst();
+            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().DrawObj(e);
         }
     }
 
     public override void Grow(int gr)
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
             if (gr > 0 && rect.X + gr > 1 && gr + rect.Right < width - 1 && rect.Y + gr > 1 && gr + rect.Bottom < height - 1)
             {
@@ -542,13 +542,13 @@ public class SGroup : Shape
                 rect.Y -= gr;
                 rect.Width += 2 * gr;
                 rect.Height += 2 * gr;
-                storage.toFirst();
-                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Grow(gr);
+                sto.toFirst();
+                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Grow(gr);
             }
             if (gr < 0)
             {
-                storage.toFirst();
-                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Grow(gr);
+                sto.toFirst();
+                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Grow(gr);
                 if (gr < 0) Resize();
             }
         }
@@ -556,29 +556,29 @@ public class SGroup : Shape
 
     public override void OffsetXY(int _x, int _y)
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
             if (rect.X + _x > 0 && _x + rect.Right < width)
             {
                 rect.X += _x;
-                storage.toFirst();
-                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().OffsetXY(_x, 0);
+                sto.toFirst();
+                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().OffsetXY(_x, 0);
             }
             if (rect.Y + _y > 0 && _y + rect.Bottom < height)
             {
                 rect.Y += _y;
-                storage.toFirst();
-                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().OffsetXY(0, _y);
+                sto.toFirst();
+                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().OffsetXY(0, _y);
             }
         }
     }
 
     public override void SetColor(Color c)
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
-            storage.toFirst();
-            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().SetColor(c);
+            sto.toFirst();
+            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().SetColor(c);
         }
     }
 
@@ -605,11 +605,11 @@ public class SGroup : Shape
     public override void Save(StreamWriter stream)
     {
         stream.WriteLine("Group");
-        stream.WriteLine(storage.size() + " " + width + " " + height);
-        if (storage.size() != 0)
+        stream.WriteLine(sto.size() + " " + width + " " + height);
+        if (sto.size() != 0)
         {
-            storage.toFirst();
-            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Save(stream);
+            sto.toFirst();
+            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Save(stream);
         }
     }
 
@@ -630,24 +630,24 @@ public class SGroup : Shape
 
     public override string GetInfo()
     {
-        return name + "    Size : " + storage.size().ToString();
+        return name + "    Size : " + sto.size().ToString();
     }
 
     public override void Rotate(int gr)
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
-            storage.toFirst();
-            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Rotate(gr);
+            sto.toFirst();
+            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Rotate(gr);
         }
     }
 
     public override bool Find(Shape obj)
     {
-        if (storage.size() != 0)
+        if (sto.size() != 0)
         {
-            storage.toFirst();
-            for (int i = 0; i < storage.size(); i++, storage.next()) if (storage.getIterator().Find(obj) == true) return true;
+            sto.toFirst();
+            for (int i = 0; i < sto.size(); i++, sto.next()) if (sto.getIterator().Find(obj) == true) return true;
         }
         return false;
     }
@@ -1159,7 +1159,7 @@ public class Observed
 }
 
 
-public class Storage<MStorage>
+public class Storage<MStorage> : Observed
 {
     public class list
     {
