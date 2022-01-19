@@ -310,6 +310,26 @@ namespace лаба_ооп6
             pictureBox1.Invalidate();
 
         }
+
+        private void treeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            TreeNode tmp = e.Node;
+            treeView1.SelectedNode = tmp;
+
+            MyStorage.toFirst();
+
+            for (int i = 0; i < treeView1.SelectedNode.Index; i++)
+            {
+                MyStorage.next();
+            }
+            MyStorage.setCurPTR();
+            MyStorage.del();
+
+
+            pictureBox1.Invalidate();
+
+
+        }
     }
 
 };
@@ -326,16 +346,49 @@ public abstract class Shape : ObjObserved
     abstract public void DrawObj(System.Drawing.Graphics e);
     abstract public void DrawRectangle(System.Drawing.Graphics e, Pen pen);
     abstract public bool Find(int _x, int _y);
+    abstract public void Clone();
     abstract public Rectangle GetRectangle();  //получить границы фигуры для контроля выхода за пределы
+}
+
+public abstract class Factory
+{
+    public abstract Shape createShape(string name);
+}
+
+public class ShapeFactory : Factory
+{
+    public override Shape createShape(string name)
+    {
+        Shape shape;
+        switch (name)
+        {
+            case "Circle":
+                shape = new CCircle();
+                break;
+            case "Group":
+                shape = new SGroup();
+                break;
+            case "Rhombus":
+                shape = new Rhombus();
+                break;
+            case "Triangle":
+                shape = new Triangle();
+                break;
+            default:
+                shape = null;
+                break;
+        }
+        return shape;
+    }
 }
 
 public class SGroup : Shape
 {
-    public Storage<Shape> sto;
+    public Storage<Shape> storage;
 
     public SGroup()
     {
-        sto = new Storage<Shape>();
+        storage = new Storage<Shape>();
         name = "Group";
     }
 
@@ -343,15 +396,15 @@ public class SGroup : Shape
     {
         width = Width;
         height = Height;
-        sto = new Storage<Shape>();
+        storage = new Storage<Shape>();
         name = "Group";
     }
 
     public void Add(Shape s)
     {
-        sto.add(s);
-        sto.get().sticky = false;
-        if (sto.size() == 1) rect = new Rectangle(s.GetRectangle().X, s.GetRectangle().Y, s.GetRectangle().Width, s.GetRectangle().Height);
+        storage.add(s);
+        storage.get().sticky = false;
+        if (storage.size() == 1) rect = new Rectangle(s.GetRectangle().X, s.GetRectangle().Y, s.GetRectangle().Width, s.GetRectangle().Height);
         else
         {
             if (s.GetRectangle().Left < rect.Left)
@@ -373,10 +426,10 @@ public class SGroup : Shape
 
     public Shape Out()
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
-            Shape tmp = sto.get();
-            sto.del();
+            Shape tmp = storage.get();
+            storage.del();
             Resize();
             return tmp;
         }
@@ -385,31 +438,31 @@ public class SGroup : Shape
 
     public int size()
     {
-        return sto.size();
+        return storage.size();
     }
 
     public override void Resize()
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
-            sto.toFirst();
-            rect = sto.getIterator().GetRectangle();
-            for (int i = 0; i < sto.size(); i++, sto.next())
+            storage.toFirst();
+            rect = storage.getIterator().GetRectangle();
+            for (int i = 0; i < storage.size(); i++, storage.next())
             {
-                if (sto.getIterator().GetRectangle().Left < rect.Left)
+                if (storage.getIterator().GetRectangle().Left < rect.Left)
                 {
                     int tmp = rect.Right;
-                    rect.X = sto.getIterator().GetRectangle().Left;
+                    rect.X = storage.getIterator().GetRectangle().Left;
                     rect.Width = tmp - rect.X;
                 }
-                if (sto.getIterator().GetRectangle().Right > rect.Right) rect.Width = sto.getIterator().GetRectangle().Right - rect.X;
-                if (sto.getIterator().GetRectangle().Top < rect.Top)
+                if (storage.getIterator().GetRectangle().Right > rect.Right) rect.Width = sto.getIterator().GetRectangle().Right - rect.X;
+                if (storage.getIterator().GetRectangle().Top < rect.Top)
                 {
                     int tmp = rect.Bottom;
-                    rect.Y = sto.getIterator().GetRectangle().Top;
+                    rect.Y = storage.getIterator().GetRectangle().Top;
                     rect.Height = tmp - rect.Y;
                 }
-                if (sto.getIterator().GetRectangle().Bottom > rect.Bottom) rect.Height = sto.getIterator().GetRectangle().Bottom - rect.Y;
+                if (storage.getIterator().GetRectangle().Bottom > rect.Bottom) rect.Height = sto.getIterator().GetRectangle().Bottom - rect.Y;
             }
         }
     }
@@ -421,16 +474,16 @@ public class SGroup : Shape
 
     public override void DrawObj(Graphics e)
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().DrawObj(e);
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().DrawObj(e);
         }
     }
 
     public override void Grow(int gr)
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
             if (gr > 0 && rect.X + gr > 1 && gr + rect.Right < width - 1 && rect.Y + gr > 1 && gr + rect.Bottom < height - 1)
             {
@@ -438,13 +491,13 @@ public class SGroup : Shape
                 rect.Y -= gr;
                 rect.Width += 2 * gr;
                 rect.Height += 2 * gr;
-                sto.toFirst();
-                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Grow(gr);
+                storage.toFirst();
+                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Grow(gr);
             }
             if (gr < 0)
             {
-                sto.toFirst();
-                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Grow(gr);
+                storage.toFirst();
+                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Grow(gr);
                 if (gr < 0) Resize();
             }
         }
@@ -452,29 +505,29 @@ public class SGroup : Shape
 
     public override void OffsetXY(int _x, int _y)
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
             if (rect.X + _x > 0 && _x + rect.Right < width)
             {
                 rect.X += _x;
-                sto.toFirst();
-                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().OffsetXY(_x, 0);
+                storage.toFirst();
+                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().OffsetXY(_x, 0);
             }
             if (rect.Y + _y > 0 && _y + rect.Bottom < height)
             {
                 rect.Y += _y;
-                sto.toFirst();
-                for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().OffsetXY(0, _y);
+                storage.toFirst();
+                for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().OffsetXY(0, _y);
             }
         }
     }
 
     public override void SetColor(Color c)
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().SetColor(c);
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().SetColor(c);
         }
     }
 
@@ -501,11 +554,11 @@ public class SGroup : Shape
     public override void Save(StreamWriter stream)
     {
         stream.WriteLine("Group");
-        stream.WriteLine(sto.size() + " " + width + " " + height);
-        if (sto.size() != 0)
+        stream.WriteLine(storage.size() + " " + width + " " + height);
+        if (storage.size() != 0)
         {
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Save(stream);
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Save(stream);
         }
     }
 
@@ -526,24 +579,24 @@ public class SGroup : Shape
 
     public override string GetInfo()
     {
-        return name + "    Size : " + sto.size().ToString();
+        return name + "    Size : " + storage.size().ToString();
     }
 
     public override void Rotate(int gr)
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next()) sto.getIterator().Rotate(gr);
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next()) storage.getIterator().Rotate(gr);
         }
     }
 
     public override bool Find(Shape obj)
     {
-        if (sto.size() != 0)
+        if (storage.size() != 0)
         {
-            sto.toFirst();
-            for (int i = 0; i < sto.size(); i++, sto.next()) if (sto.getIterator().Find(obj) == true) return true;
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next()) if (storage.getIterator().Find(obj) == true) return true;
         }
         return false;
     }
@@ -559,6 +612,7 @@ public class CCircle : Shape
         X = 0;
         Y = 0;
         R = 0;
+        name = "Circle";
     }
     public CCircle(int x, int y, int r, Color c, int Width, int Height)
     {
@@ -567,6 +621,7 @@ public class CCircle : Shape
         this.Y = y;
         width = Width;
         height = Height;
+        name = "Circle";
         color = c;
         if (r > x) r = x;
         if (x + r > width) r = width - x;
@@ -598,6 +653,7 @@ public class CCircle : Shape
 
     public override void DrawObj(Graphics e)
     {
+        e.DrawEllipse(new Pen(Color.Black, 2), rect);
         e.FillEllipse(new SolidBrush(color), rect);
     }
 
@@ -608,6 +664,19 @@ public class CCircle : Shape
 
     public override void OffsetXY(int _x, int _y)
     {
+        if (storage != null && storage.size() != 0 && sticky == true)
+        {
+            storage.toFirst();
+            for (int i = 0; i < storage.size(); i++, storage.next())
+            {
+                if (Find(storage.getIterator()) == true && storage.getIterator() != this)
+                {
+                    if (storage.getIterator().sticky == false)
+                        storage.getIterator().OffsetXY(_x, _y);
+                }
+            }
+        }
+
         if (X + _x > R && X + _x + R < width) X += _x;
         if (Y + _y > R && Y + _y + R < height) Y += _y;
         Resize();
@@ -678,6 +747,10 @@ public class Rhombus : CCircle
         }
         rect = new Rectangle(X - R, Y - R, 2 * R, 2 * R);
     }
+    public override void Clone()
+    {
+        throw new NotImplementedException();
+    }
 
     public override void SetColor(Color c)
     {
@@ -691,7 +764,7 @@ public class Rhombus : CCircle
 
     public override bool Find(int _x, int _y)
     {
-        if (rect.X < _x && _x < rect.Right && rect.Y < _y && _y < rect.Bottom) return true; else return false;
+        if (Math.Pow(X - _x, 2) + Math.Pow(Y - _y, 2) <= R * R) return true; else return false;
     }
 }
 

@@ -236,6 +236,7 @@ namespace лаба_ооп6
             this.treeView1.Name = "treeView1";
             this.treeView1.Size = new System.Drawing.Size(257, 168);
             this.treeView1.TabIndex = 3;
+            this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
