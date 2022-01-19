@@ -899,7 +899,7 @@ public class Rhombus : CCircle
 
     public override bool Find(int _x, int _y)
     {
-        if (Math.Pow(X - _x, 2) + Math.Pow(Y - _y, 2) <= R * R) return true; else return false;
+        if (rect.X < _x && _x < rect.Right && rect.Y < _y && _y < rect.Bottom) return true; else return false;
     }
     public override void Save(StreamWriter stream)
     {
@@ -1034,7 +1034,7 @@ public class Triangle : CCircle
 
     public override bool Find(int _x, int _y)
     {
-        if (Math.Pow(X - _x, 2) + Math.Pow(Y - _y, 2) <= R * R) return true; else return false;
+        if (rect.X < _x && _x < rect.Right && rect.Y < _y && _y < rect.Bottom) return true; else return false;
     }
     public override void Save(StreamWriter stream)
     {
