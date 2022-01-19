@@ -898,6 +898,21 @@ public class Triangle : CCircle
         stream.WriteLine("Triangle");
         stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + rotate + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
     }
+    public override string GetInfo()
+    {
+        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " N: " + n + " " + color.ToString();
+    }
+
+    public override void Rotate(int gr)
+    {
+        rotate += gr;
+        Resize();
+    }
+    public void growN(int gr)
+    {
+        if (n + gr > 2) n += gr;
+        Resize();
+    }
 
 
     public override void Resize()
