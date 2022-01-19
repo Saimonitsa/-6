@@ -13,11 +13,15 @@ namespace лаба_ооп6
     public partial class Form1 : Form
     {
         Storage<Shape> MyStorage = new Storage<Shape>();
-        
+        Tree tree;
         public Form1()
         {
             InitializeComponent();
             (pictureBox1 as Control).KeyPress += new KeyPressEventHandler(PressEventHandler);
+            tree = new Tree(sto, treeView1);
+            sto.AddObserver(tree);
+            treeView1.CheckBoxes = true;
+
         }
 
         public void PressEventHandler(object sender, KeyPressEventArgs e)
@@ -71,6 +75,7 @@ namespace лаба_ооп6
                 }
 
             }
+            tree.Print();
             pictureBox1.Invalidate();
         }
 
