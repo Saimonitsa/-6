@@ -251,7 +251,7 @@ namespace лаба_ооп6
                 FileStream f = new FileStream(openFileDialog1.FileName, FileMode.Open);
                 StreamReader stream = new StreamReader(f);
                 int i = Convert.ToInt32(stream.ReadLine());
-                Factory shapeFactory = new ShapeFactory();  //фабрика КОНКРЕТНЫХ объектов
+                Factory shapeFactory = new ShapeFactory();  
                 for (; i > 0; i--)
                 {
                     string tmp = stream.ReadLine();
@@ -263,7 +263,6 @@ namespace лаба_ооп6
             }
             pictureBox1.Invalidate();
             tree.Print();
-
         }
 
         private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
@@ -725,7 +724,7 @@ public class CCircle : Shape
     public override void Save(StreamWriter stream)
     {
         stream.WriteLine("Circle");
-        stream.WriteLine((rect.X + R) + " " + (rect.Y + R) + " " + R + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+        stream.WriteLine((rect.X + R) + " " + (rect.Y + R) + " " + R + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height + " " + sticky);
     }
 
     public override bool Find(int _x, int _y)
@@ -741,11 +740,12 @@ public class CCircle : Shape
         color = Color.FromArgb(Convert.ToInt32(data[3]), Convert.ToInt32(data[4]), Convert.ToInt32(data[5]));
         width = Convert.ToInt32(data[6]);
         height = Convert.ToInt32(data[7]);
+        sticky = Convert.ToBoolean(data[8]);
         Resize();
     }
     public override string GetInfo()
     {
-        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString();
+        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString() + "Sticky: " + sticky;
     }
 
 
@@ -821,6 +821,7 @@ public class Rhombus : CCircle
         color = Color.FromArgb(Convert.ToInt32(data[5]), Convert.ToInt32(data[6]), Convert.ToInt32(data[7]));
         width = Convert.ToInt32(data[8]);
         height = Convert.ToInt32(data[9]);
+        sticky = Convert.ToBoolean(data[10]);
         Resize();
     }
 
@@ -876,13 +877,13 @@ public class Rhombus : CCircle
     public override void Save(StreamWriter stream)
     {
         stream.WriteLine("Rhombus");
-        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height + " " + sticky);
     }
 
 
     public override string GetInfo()
     {
-        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString();
+        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString() + "Sticky: " + sticky;
     }
     public void growN(int gr)
     {
@@ -951,6 +952,7 @@ public class Triangle : CCircle
         color = Color.FromArgb(Convert.ToInt32(data[5]), Convert.ToInt32(data[6]), Convert.ToInt32(data[7]));
         width = Convert.ToInt32(data[8]);
         height = Convert.ToInt32(data[9]);
+        sticky = Convert.ToBoolean(data[10]);
         Resize();
     }
 
@@ -1006,13 +1008,13 @@ public class Triangle : CCircle
     public override void Save(StreamWriter stream)
     {
         stream.WriteLine("Triangle");
-        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + rotate + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height);
+        stream.WriteLine(X + " " + Y + " " + R + " " + n + " " + rotate + " " + color.R + " " + color.G + " " + color.B + " " + width + " " + height + " " + sticky);
     }
 
 
     public override string GetInfo()
     {
-        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString();
+        return name + "  X: " + X + " Y: " + Y + " Rad: " + R + " " + color.ToString() + "Sticky: " + sticky;
     }
     public void growN(int gr)
     {

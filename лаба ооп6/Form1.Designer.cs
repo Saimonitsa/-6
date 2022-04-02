@@ -68,9 +68,10 @@ namespace лаба_ооп6
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.HighlightText;
+            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictureBox1.Location = new System.Drawing.Point(-2, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(595, 451);
+            this.pictureBox1.Size = new System.Drawing.Size(636, 481);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint_1);
@@ -79,11 +80,12 @@ namespace лаба_ооп6
             // 
             // panel1
             // 
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.checkBox1);
             this.panel1.Controls.Add(this.radioButton3);
             this.panel1.Controls.Add(this.radioButton2);
             this.panel1.Controls.Add(this.radioButton1);
-            this.panel1.Location = new System.Drawing.Point(599, 56);
+            this.panel1.Location = new System.Drawing.Point(663, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(188, 115);
             this.panel1.TabIndex = 1;
@@ -93,9 +95,9 @@ namespace лаба_ооп6
             this.checkBox1.AutoSize = true;
             this.checkBox1.Location = new System.Drawing.Point(4, 91);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(102, 21);
+            this.checkBox1.Size = new System.Drawing.Size(79, 21);
             this.checkBox1.TabIndex = 4;
-            this.checkBox1.Text = "Прилепить";
+            this.checkBox1.Text = "Липкий";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
@@ -134,6 +136,7 @@ namespace лаба_ооп6
             // 
             // panel2
             // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.label10);
             this.panel2.Controls.Add(this.label9);
             this.panel2.Controls.Add(this.label8);
@@ -144,7 +147,7 @@ namespace лаба_ооп6
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.label2);
-            this.panel2.Location = new System.Drawing.Point(600, 218);
+            this.panel2.Location = new System.Drawing.Point(654, 132);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(216, 220);
             this.panel2.TabIndex = 2;
@@ -245,9 +248,9 @@ namespace лаба_ооп6
             // 
             // treeView1
             // 
-            this.treeView1.Location = new System.Drawing.Point(-2, 457);
+            this.treeView1.Location = new System.Drawing.Point(-2, 487);
             this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(257, 168);
+            this.treeView1.Size = new System.Drawing.Size(636, 168);
             this.treeView1.TabIndex = 3;
             this.treeView1.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterCheck);
             this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
@@ -255,9 +258,10 @@ namespace лаба_ооп6
             // 
             // panel3
             // 
+            this.panel3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel3.Controls.Add(this.button4);
             this.panel3.Controls.Add(this.button5);
-            this.panel3.Location = new System.Drawing.Point(270, 487);
+            this.panel3.Location = new System.Drawing.Point(654, 368);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(200, 100);
             this.panel3.TabIndex = 4;
@@ -284,9 +288,9 @@ namespace лаба_ооп6
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(3, 12);
+            this.button1.Location = new System.Drawing.Point(16, 12);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(144, 31);
+            this.button1.Size = new System.Drawing.Size(92, 31);
             this.button1.TabIndex = 0;
             this.button1.Text = "Сохранить";
             this.button1.UseVisualStyleBackColor = true;
@@ -294,9 +298,9 @@ namespace лаба_ооп6
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(3, 49);
+            this.button2.Location = new System.Drawing.Point(16, 49);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(144, 32);
+            this.button2.Size = new System.Drawing.Size(92, 32);
             this.button2.TabIndex = 1;
             this.button2.Text = "Загрузить";
             this.button2.UseVisualStyleBackColor = true;
@@ -304,20 +308,21 @@ namespace лаба_ооп6
             // 
             // panel4
             // 
+            this.panel4.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel4.Controls.Add(this.button6);
             this.panel4.Controls.Add(this.button3);
             this.panel4.Controls.Add(this.button2);
             this.panel4.Controls.Add(this.button1);
-            this.panel4.Location = new System.Drawing.Point(497, 487);
+            this.panel4.Location = new System.Drawing.Point(640, 501);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(319, 100);
+            this.panel4.Size = new System.Drawing.Size(230, 100);
             this.panel4.TabIndex = 5;
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(169, 50);
+            this.button6.Location = new System.Drawing.Point(116, 50);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(144, 31);
+            this.button6.Size = new System.Drawing.Size(101, 31);
             this.button6.TabIndex = 4;
             this.button6.Text = "Удалить";
             this.button6.UseVisualStyleBackColor = true;
@@ -325,9 +330,9 @@ namespace лаба_ооп6
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(169, 12);
+            this.button3.Location = new System.Drawing.Point(114, 13);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(144, 31);
+            this.button3.Size = new System.Drawing.Size(102, 31);
             this.button3.TabIndex = 2;
             this.button3.Text = "Очистить";
             this.button3.UseVisualStyleBackColor = true;
@@ -337,7 +342,7 @@ namespace лаба_ооп6
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(822, 626);
+            this.ClientSize = new System.Drawing.Size(882, 662);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.treeView1);
